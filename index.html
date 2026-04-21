@@ -3,550 +3,941 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sponsoring Management - Heikki Piali</title>
+    <title>Sponsoring Management – Heikki Piali</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg: #0d0f14;
+            --surface: #151820;
+            --surface2: #1c2030;
+            --border: #252a3a;
+            --accent: #4f7cff;
+            --accent2: #a259ff;
+            --accent3: #00e5a0;
+            --danger: #ff4d6a;
+            --warning: #ffb03a;
+            --text: #e8ecf5;
+            --text-muted: #7a849e;
+            --text-dim: #3d4560;
+            --green: #00c97a;
+            --radius: 10px;
+            --radius-lg: 16px;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        /* ════════════════════════════════
+           LOGIN SCREEN
+        ════════════════════════════════ */
+        #loginScreen {
             display: flex;
             align-items: center;
             justify-content: center;
+            min-height: 100vh;
             padding: 20px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        .login-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            max-width: 500px;
-            margin: 0 auto;
-            display: none;
-        }
-
-        .login-container.active {
-            display: block;
-        }
-
-        .login-container h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-
-        .login-container p {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .error {
-            color: #e74c3c;
-            font-size: 14px;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .error.show {
-            display: block;
-        }
-
-        .dashboard-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            display: none;
+            background: var(--bg);
+            position: relative;
             overflow: hidden;
         }
 
-        .dashboard-container.active {
-            display: flex;
-            flex-direction: column;
+        #loginScreen::before {
+            content: '';
+            position: absolute;
+            width: 600px; height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(79,124,255,0.08) 0%, transparent 70%);
+            top: -100px; left: -100px;
+            pointer-events: none;
         }
 
-        .dashboard-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
+        #loginScreen::after {
+            content: '';
+            position: absolute;
+            width: 500px; height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(162,89,255,0.07) 0%, transparent 70%);
+            bottom: -80px; right: -80px;
+            pointer-events: none;
+        }
+
+        .login-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 48px 44px;
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            z-index: 1;
+            animation: fadeUp 0.5s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-logo {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 12px;
+            margin-bottom: 36px;
         }
 
-        .dashboard-header h1 {
-            font-size: 28px;
+        .login-logo-icon {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
         }
 
-        .logout-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
+        .login-logo-text {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 18px;
+            color: var(--text);
+            line-height: 1.1;
         }
 
-        .logout-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .login-logo-text span {
+            display: block;
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 30px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e0e0e0;
+        .login-card h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 6px;
         }
 
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .stat-card h3 {
-            color: #666;
+        .login-card p {
+            color: var(--text-muted);
             font-size: 14px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            margin-bottom: 32px;
         }
 
-        .stat-card .number {
-            color: #667eea;
-            font-size: 32px;
-            font-weight: bold;
-        }
-
-        .content {
-            padding: 30px;
-        }
-
-        .controls {
-            display: flex;
-            gap: 15px;
+        .field {
             margin-bottom: 20px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .field-wrap {
+            position: relative;
+        }
+
+        .field input {
+            width: 100%;
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 13px 44px 13px 14px;
+            font-size: 15px;
+            color: var(--text);
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        .field input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(79,124,255,0.12);
+        }
+
+        .toggle-pw {
+            position: absolute;
+            right: 13px; top: 50%;
+            transform: translateY(-50%);
+            background: none; border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 18px;
+            display: flex; align-items: center;
+            transition: color 0.2s;
+            padding: 0;
+        }
+
+        .toggle-pw:hover { color: var(--text); }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border: none; border-radius: var(--radius);
+            color: white;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            letter-spacing: 0.03em;
+            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+            margin-top: 8px;
+        }
+
+        .btn-login:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(79,124,255,0.3);
+        }
+
+        .btn-login:active { transform: translateY(0); }
+
+        .login-error {
+            margin-top: 14px;
+            padding: 11px 14px;
+            background: rgba(255,77,106,0.1);
+            border: 1px solid rgba(255,77,106,0.25);
+            border-radius: var(--radius);
+            color: var(--danger);
+            font-size: 13px;
+            display: none;
+            animation: shake 0.4s ease;
+        }
+
+        .login-error.show { display: block; }
+
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20%,60%  { transform: translateX(-6px); }
+            40%,80%  { transform: translateX(6px); }
+        }
+
+        /* ════════════════════════════════
+           DASHBOARD
+        ════════════════════════════════ */
+        #dashboardScreen {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        #dashboardScreen.active {
+            display: flex;
+        }
+
+        /* HEADER */
+        .topbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 28px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .topbar-left {
+            display: flex; align-items: center; gap: 14px;
+        }
+
+        .topbar-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 17px;
+        }
+
+        .topbar-title {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 17px;
+        }
+
+        .topbar-title span {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 14px;
+            margin-left: 6px;
+        }
+
+        .topbar-right {
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .topbar-user {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .btn-logout {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* STATS STRIP */
+        .stats-strip {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 28px;
+            display: flex;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
-        .controls input,
-        .controls select {
-            padding: 10px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .controls input {
+        .stat-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 16px;
             flex: 1;
-            min-width: 200px;
+            min-width: 120px;
+            transition: border-color 0.2s;
         }
 
-        .btn-add {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
+        .stat-pill:hover { border-color: var(--accent); }
+
+        .stat-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .stat-info { line-height: 1.2; }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            padding: 28px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .search-wrap svg {
+            position: absolute;
+            left: 13px; top: 50%;
+            transform: translateY(-50%);
+            width: 16px; height: 16px;
+            color: var(--text-dim);
+            pointer-events: none;
+        }
+
+        .search-wrap input,
+        .toolbar select {
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 14px;
+            padding: 10px 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-wrap input {
+            width: 100%;
+            padding-left: 38px;
+        }
+
+        .search-wrap input:focus,
+        .toolbar select:focus {
+            border-color: var(--accent);
+        }
+
+        .toolbar select {
+            min-width: 180px;
             cursor: pointer;
-            font-weight: 600;
-            white-space: nowrap;
         }
 
-        .btn-add:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        .toolbar select option { background: var(--surface2); }
+
+        .btn-add-sponsor {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border: none;
+            border-radius: var(--radius);
+            color: white;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 10px 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+        }
+
+        .btn-add-sponsor:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(79,124,255,0.3);
+        }
+
+        /* TABLE */
+        .table-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
         }
 
-        table thead {
-            background: #f8f9fa;
-            border-bottom: 2px solid #e0e0e0;
+        thead {
+            background: var(--surface2);
+            border-bottom: 1px solid var(--border);
         }
 
-        table th {
-            padding: 15px;
+        th {
+            padding: 13px 16px;
             text-align: left;
-            color: #333;
+            font-size: 11px;
             font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 14px 16px;
             font-size: 14px;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
         }
 
-        table td {
-            padding: 15px;
-            border-bottom: 1px solid #e0e0e0;
-            color: #555;
+        tr:last-child td { border-bottom: none; }
+
+        tbody tr { transition: background 0.15s; }
+        tbody tr:hover { background: var(--surface2); }
+
+        .company-name {
+            font-weight: 500;
+            color: var(--text);
         }
 
-        table tr:hover {
-            background: #f8f9fa;
+        .contact-name {
+            color: var(--text-muted);
+            font-size: 13px;
         }
 
-        .status-badge {
-            display: inline-block;
-            padding: 6px 12px;
+        .email-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .email-link:hover { text-decoration: underline; }
+
+        .notes-cell {
+            color: var(--text-muted);
+            font-size: 13px;
+            max-width: 160px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .date-cell {
+            color: var(--text-muted);
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        /* STATUS BADGES */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
             border-radius: 20px;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .badge::before {
+            content: '';
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .badge-new       { background: rgba(79,124,255,0.12); color: #6b9aff; }
+        .badge-preparing { background: rgba(255,176,58,0.12); color: #ffc05a; }
+        .badge-sent      { background: rgba(162,89,255,0.12); color: #bf82ff; }
+        .badge-reply     { background: rgba(0,201,122,0.12);  color: #00e07a; }
+        .badge-reject    { background: rgba(255,77,106,0.12); color: #ff6b85; }
+        .badge-accept    { background: rgba(0,229,160,0.12);  color: #00e5a0; }
+
+        /* ACTION BUTTONS */
+        .actions { display: flex; gap: 6px; }
+
+        .btn-action {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.15s;
+        }
+
+        .btn-action:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-action.del:hover { border-color: var(--danger); color: var(--danger); }
+
+        /* EMPTY STATE */
+        .empty-state {
+            padding: 64px 20px;
             text-align: center;
         }
 
-        .status-new {
-            background: #e8f4f8;
-            color: #0288d1;
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.4;
         }
 
-        .status-preparing {
-            background: #fff3e0;
-            color: #f57c00;
+        .empty-state h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px;
+            margin-bottom: 8px;
         }
 
-        .status-sent {
-            background: #f3e5f5;
-            color: #7b1fa2;
-        }
+        .empty-state p { color: var(--text-muted); font-size: 14px; }
 
-        .status-reply {
-            background: #e8f5e9;
-            color: #388e3c;
-        }
-
-        .status-reject {
-            background: #ffebee;
-            color: #c62828;
-        }
-
-        .status-accept {
-            background: #e0f2f1;
-            color: #00695c;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-small {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-edit {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-edit:hover {
-            background: #5568d3;
-        }
-
-        .btn-delete {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .btn-delete:hover {
-            background: #c0392b;
-        }
-
-        .modal {
+        /* ════════════════════════════════
+           MODAL
+        ════════════════════════════════ */
+        .modal-overlay {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(4px);
+            z-index: 200;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
-        .modal.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
 
-        .modal-content {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 500px;
+        .modal-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 32px;
             width: 100%;
+            max-width: 520px;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalIn 0.25s ease both;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.96) translateY(10px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .modal-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            justify-content: space-between;
+            margin-bottom: 28px;
         }
 
         .modal-header h2 {
-            color: #333;
-            font-size: 22px;
+            font-family: 'Syne', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
         }
 
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: #999;
+        .modal-close {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: var(--text-muted);
+            font-size: 18px; line-height: 1;
+            transition: all 0.15s;
         }
 
-        .close-btn:hover {
-            color: #333;
+        .modal-close:hover { color: var(--text); border-color: var(--text-muted); }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
         }
 
-        .form-group-modal {
-            margin-bottom: 15px;
-        }
+        .modal-grid .full { grid-column: 1 / -1; }
 
-        .form-group-modal label {
-            display: block;
-            margin-bottom: 6px;
-            color: #333;
+        .mfield { display: flex; flex-direction: column; gap: 6px; }
+
+        .mfield label {
+            font-size: 12px;
             font-weight: 500;
-            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .form-group-modal input,
-        .form-group-modal select,
-        .form-group-modal textarea {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 14px;
+        .mfield input,
+        .mfield select,
+        .mfield textarea {
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text);
             font-family: inherit;
+            font-size: 14px;
+            padding: 10px 12px;
+            outline: none;
+            transition: border-color 0.2s;
         }
 
-        .form-group-modal textarea {
+        .mfield textarea {
             resize: vertical;
             min-height: 80px;
         }
 
-        .form-group-modal input:focus,
-        .form-group-modal select:focus,
-        .form-group-modal textarea:focus {
-            outline: none;
-            border-color: #667eea;
+        .mfield input:focus,
+        .mfield select:focus,
+        .mfield textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(79,124,255,0.1);
         }
 
-        .modal-buttons {
+        .mfield select option { background: var(--surface2); }
+
+        .modal-footer {
             display: flex;
             gap: 10px;
-            margin-top: 20px;
-        }
-
-        .modal-buttons button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
+            margin-top: 24px;
         }
 
         .btn-save {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border: none; border-radius: var(--radius);
             color: white;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
         }
 
-        .btn-save:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        .btn-save:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .btn-cancel-modal {
+            padding: 12px 22px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
         }
 
-        .btn-cancel {
-            background: #e0e0e0;
-            color: #333;
+        .btn-cancel-modal:hover { color: var(--text); border-color: var(--text-muted); }
+
+        /* CONFIRM DIALOG */
+        .confirm-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        .btn-cancel:hover {
-            background: #d0d0d0;
-        }
+        .confirm-overlay.active { display: flex; }
 
-        .empty-state {
+        .confirm-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            max-width: 360px;
+            width: 100%;
             text-align: center;
-            padding: 40px;
-            color: #999;
+            animation: modalIn 0.2s ease both;
         }
 
-        .empty-state p {
-            font-size: 16px;
-            margin-bottom: 20px;
+        .confirm-box .icon { font-size: 40px; margin-bottom: 14px; }
+
+        .confirm-box h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px;
+            margin-bottom: 8px;
         }
 
-        @media (max-width: 768px) {
-            .dashboard-header {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
+        .confirm-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
 
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .confirm-btns { display: flex; gap: 10px; }
 
-            .controls {
-                flex-direction: column;
-            }
+        .btn-confirm-del {
+            flex: 1; padding: 11px;
+            background: var(--danger); border: none;
+            border-radius: var(--radius); color: white;
+            font-family: 'Syne', sans-serif; font-weight: 700;
+            font-size: 14px; cursor: pointer;
+            transition: opacity 0.2s;
+        }
 
-            .controls input {
-                min-width: auto;
-            }
+        .btn-confirm-del:hover { opacity: 0.85; }
 
-            table {
-                font-size: 12px;
-            }
+        .btn-confirm-cancel {
+            flex: 1; padding: 11px;
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: var(--radius); color: var(--text-muted);
+            font-family: inherit; font-size: 14px; cursor: pointer;
+            transition: all 0.15s;
+        }
 
-            table th,
-            table td {
-                padding: 10px;
-            }
+        .btn-confirm-cancel:hover { color: var(--text); }
 
-            .action-buttons {
-                flex-direction: column;
-            }
+        /* RESPONSIVE */
+        @media (max-width: 720px) {
+            .topbar { padding: 0 16px; }
+            .stats-strip { padding: 14px 16px; }
+            .main-content { padding: 16px; }
+            .modal-grid { grid-template-columns: 1fr; }
+            .modal-grid .full { grid-column: 1; }
+            table { font-size: 12px; }
+            th, td { padding: 10px 12px; }
+            .stat-pill { min-width: 100px; }
+        }
 
-            .modal-content {
-                margin: 20px;
-            }
+        @media (max-width: 520px) {
+            .topbar-user { display: none; }
         }
     </style>
 </head>
 <body>
-    <!-- LOGIN CONTAINER -->
-    <div class="login-container active" id="loginContainer">
-        <h1>🤝 Sponsoring Management</h1>
-        <p>Geben Sie das Passwort ein, um auf das Dashboard zuzugreifen.</p>
-        
-        <form id="loginForm" onsubmit="handleLogin(event)">
-            <div class="form-group">
-                <label for="password">Passwort</label>
-                <input type="password" id="password" placeholder="Management67" required>
+
+<!-- ══════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════ -->
+<div id="loginScreen">
+    <div class="login-card">
+        <div class="login-logo">
+            <div class="login-logo-icon">🤝</div>
+            <div class="login-logo-text">
+                Heikki Piali
+                <span>Sponsoring Management</span>
             </div>
-            <button type="submit" class="btn btn-primary">Anmelden</button>
-            <div class="error" id="loginError"></div>
-        </form>
+        </div>
+
+        <h2>Willkommen zurück</h2>
+        <p>Bitte melden Sie sich an, um fortzufahren.</p>
+
+        <div class="field">
+            <label for="password">Passwort</label>
+            <div class="field-wrap">
+                <input type="password" id="password" autocomplete="current-password" placeholder="••••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+                <button class="toggle-pw" id="togglePwBtn" onclick="togglePassword()" tabindex="-1" type="button" aria-label="Passwort anzeigen">
+                    <!-- Eye icon -->
+                    <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <svg id="eyeOffIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="display:none">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                        <line x1="1" y1="1" x2="23" y2="23"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <button class="btn-login" onclick="doLogin()">Anmelden</button>
+        <div class="login-error" id="loginError">Falsches Passwort. Bitte erneut versuchen.</div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════
+     DASHBOARD SCREEN
+══════════════════════════════════ -->
+<div id="dashboardScreen">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-icon">📊</div>
+            <div class="topbar-title">
+                Sponsoring Management
+                <span>Heikki Piali</span>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <span class="topbar-user">Management</span>
+            <button class="btn-logout" onclick="doLogout()">Abmelden</button>
+        </div>
     </div>
 
-    <!-- DASHBOARD CONTAINER -->
-    <div class="dashboard-container" id="dashboardContainer">
-        <div class="dashboard-header">
-            <h1>📊 Sponsoring Management Dashboard</h1>
-            <button class="logout-btn" onclick="handleLogout()">Abmelden</button>
-        </div>
-
-        <!-- STATISTICS -->
-        <div class="stats-grid" id="statsGrid">
-            <div class="stat-card">
-                <h3>Gesamt</h3>
-                <div class="number" id="statTotal">0</div>
-            </div>
-            <div class="stat-card">
-                <h3>Kontaktiert</h3>
-                <div class="number" id="statContacted">0</div>
-            </div>
-            <div class="stat-card">
-                <h3>Antworten</h3>
-                <div class="number" id="statReplies">0</div>
-            </div>
-            <div class="stat-card">
-                <h3>Absagen</h3>
-                <div class="number" id="statRejects">0</div>
-            </div>
-            <div class="stat-card">
-                <h3>Partner</h3>
-                <div class="number" id="statPartners">0</div>
+    <!-- STATS -->
+    <div class="stats-strip" id="statsStrip">
+        <div class="stat-pill">
+            <div class="stat-dot" style="background:#7a849e"></div>
+            <div class="stat-info">
+                <div class="stat-label">Gesamt</div>
+                <div class="stat-value" id="sTotal">0</div>
             </div>
         </div>
+        <div class="stat-pill">
+            <div class="stat-dot" style="background:#6b9aff"></div>
+            <div class="stat-info">
+                <div class="stat-label">Kontaktiert</div>
+                <div class="stat-value" id="sContacted">0</div>
+            </div>
+        </div>
+        <div class="stat-pill">
+            <div class="stat-dot" style="background:#00e07a"></div>
+            <div class="stat-info">
+                <div class="stat-label">Antworten</div>
+                <div class="stat-value" id="sReplies">0</div>
+            </div>
+        </div>
+        <div class="stat-pill">
+            <div class="stat-dot" style="background:#ff6b85"></div>
+            <div class="stat-info">
+                <div class="stat-label">Absagen</div>
+                <div class="stat-value" id="sRejects">0</div>
+            </div>
+        </div>
+        <div class="stat-pill">
+            <div class="stat-dot" style="background:#00e5a0"></div>
+            <div class="stat-info">
+                <div class="stat-label">Partner</div>
+                <div class="stat-value" id="sPartners">0</div>
+            </div>
+        </div>
+    </div>
 
-        <!-- CONTENT -->
-        <div class="content">
-            <!-- CONTROLS -->
-            <div class="controls">
-                <input type="text" id="searchInput" placeholder="Nach Firmenname, Ansprechpartner oder E-Mail suchen..." onkeyup="filterTable()">
-                <select id="statusFilter" onchange="filterTable()">
-                    <option value="">Alle Status</option>
+    <!-- MAIN -->
+    <div class="main-content">
+        <div class="toolbar">
+            <div class="search-wrap">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input type="text" id="searchInput" placeholder="Suche nach Firma, Ansprechpartner oder E-Mail…" oninput="filterTable()">
+            </div>
+            <select id="statusFilter" onchange="filterTable()">
+                <option value="">Alle Status</option>
+                <option value="Noch nicht kontaktiert">Noch nicht kontaktiert</option>
+                <option value="E-Mail in Vorbereitung">E-Mail in Vorbereitung</option>
+                <option value="E-Mail gesendet">E-Mail gesendet</option>
+                <option value="Antwort erhalten">Antwort erhalten</option>
+                <option value="Absage">Absage</option>
+                <option value="Zusage/Partner">Zusage/Partner</option>
+            </select>
+            <button class="btn-add-sponsor" onclick="openAddModal()">+ Neuer Sponsor</button>
+        </div>
+
+        <div class="table-wrap">
+            <div id="tableContainer"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SPONSOR MODAL
+══════════════════════════════════ -->
+<div class="modal-overlay" id="sponsorModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2 id="modalTitle">Neuer Sponsor</h2>
+            <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+
+        <div class="modal-grid">
+            <div class="mfield full">
+                <label>Firmenname *</label>
+                <input type="text" id="mCompany" required placeholder="Musterfirma GmbH">
+            </div>
+            <div class="mfield">
+                <label>Ansprechpartner *</label>
+                <input type="text" id="mContact" required placeholder="Max Mustermann">
+            </div>
+            <div class="mfield">
+                <label>E-Mail *</label>
+                <input type="email" id="mEmail" required placeholder="max@firma.de">
+            </div>
+            <div class="mfield full">
+                <label>Status</label>
+                <select id="mStatus">
                     <option value="Noch nicht kontaktiert">Noch nicht kontaktiert</option>
                     <option value="E-Mail in Vorbereitung">E-Mail in Vorbereitung</option>
                     <option value="E-Mail gesendet">E-Mail gesendet</option>
@@ -554,309 +945,293 @@
                     <option value="Absage">Absage</option>
                     <option value="Zusage/Partner">Zusage/Partner</option>
                 </select>
-                <button class="btn-add" onclick="openAddModal()">+ Neuer Sponsor</button>
             </div>
+            <div class="mfield">
+                <label>E-Mail gesendet am</label>
+                <input type="date" id="mEmailDate">
+            </div>
+            <div class="mfield">
+                <label>Antwort erhalten am</label>
+                <input type="date" id="mResponseDate">
+            </div>
+            <div class="mfield full">
+                <label>Notizen</label>
+                <textarea id="mNotes" placeholder="Gesprächsnotizen, Bemerkungen…"></textarea>
+            </div>
+        </div>
 
-            <!-- TABLE -->
-            <div id="tableContainer"></div>
+        <div class="modal-footer">
+            <button class="btn-cancel-modal" onclick="closeModal()">Abbrechen</button>
+            <button class="btn-save" onclick="saveSponsor()">Speichern</button>
         </div>
     </div>
+</div>
 
-    <!-- MODAL -->
-    <div class="modal" id="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle">Neuer Sponsor</h2>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
-            </div>
-
-            <form id="sponsorForm" onsubmit="handleSave(event)">
-                <div class="form-group-modal">
-                    <label for="companyName">Firmenname *</label>
-                    <input type="text" id="companyName" required>
-                </div>
-
-                <div class="form-group-modal">
-                    <label for="contactPerson">Ansprechpartner *</label>
-                    <input type="text" id="contactPerson" required>
-                </div>
-
-                <div class="form-group-modal">
-                    <label for="email">E-Mail *</label>
-                    <input type="email" id="email" required>
-                </div>
-
-                <div class="form-group-modal">
-                    <label for="status">Status</label>
-                    <select id="status">
-                        <option value="Noch nicht kontaktiert">Noch nicht kontaktiert</option>
-                        <option value="E-Mail in Vorbereitung">E-Mail in Vorbereitung</option>
-                        <option value="E-Mail gesendet">E-Mail gesendet</option>
-                        <option value="Antwort erhalten">Antwort erhalten</option>
-                        <option value="Absage">Absage</option>
-                        <option value="Zusage/Partner">Zusage/Partner</option>
-                    </select>
-                </div>
-
-                <div class="form-group-modal">
-                    <label for="emailSentDate">E-Mail versendet am</label>
-                    <input type="date" id="emailSentDate">
-                </div>
-
-                <div class="form-group-modal">
-                    <label for="responseDate">Antwort erhalten am</label>
-                    <input type="date" id="responseDate">
-                </div>
-
-                <div class="form-group-modal">
-                    <label for="notes">Notizen</label>
-                    <textarea id="notes" placeholder="Interne Bemerkungen, Gesprächsnotizen, etc."></textarea>
-                </div>
-
-                <div class="modal-buttons">
-                    <button type="submit" class="btn-save">Speichern</button>
-                    <button type="button" class="btn-cancel" onclick="closeModal()">Abbrechen</button>
-                </div>
-            </form>
+<!-- ══════════════════════════════════
+     CONFIRM DELETE
+══════════════════════════════════ -->
+<div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-box">
+        <div class="icon">🗑️</div>
+        <h3>Sponsor löschen?</h3>
+        <p>Diese Aktion kann nicht rückgängig gemacht werden.</p>
+        <div class="confirm-btns">
+            <button class="btn-confirm-cancel" onclick="closeConfirm()">Abbrechen</button>
+            <button class="btn-confirm-del" onclick="confirmDelete()">Löschen</button>
         </div>
     </div>
+</div>
 
-    <script>
-        const CORRECT_PASSWORD = 'Management67';
-        let sponsors = [];
-        let editingId = null;
+<script>
+    // ── CONFIG ──────────────────────────────────────
+    const PASSWORD = 'Management';
 
-        // Load data from localStorage
-        function loadData() {
-            const stored = localStorage.getItem('sponsors');
-            if (stored) {
-                sponsors = JSON.parse(stored);
-            }
-        }
+    // ── STATE ───────────────────────────────────────
+    let sponsors = [];
+    let editingId = null;
+    let pendingDeleteId = null;
 
-        // Save data to localStorage
-        function saveData() {
-            localStorage.setItem('sponsors', JSON.stringify(sponsors));
-            updateStats();
-            renderTable();
-        }
+    // ── PERSISTENCE ─────────────────────────────────
+    function loadData() {
+        try { sponsors = JSON.parse(localStorage.getItem('hp_sponsors') || '[]'); }
+        catch { sponsors = []; }
+    }
 
-        // Handle login
-        function handleLogin(event) {
-            event.preventDefault();
-            const password = document.getElementById('password').value;
-            
-            if (password === CORRECT_PASSWORD) {
-                localStorage.setItem('authenticated', 'true');
-                showDashboard();
-            } else {
-                const errorEl = document.getElementById('loginError');
-                errorEl.textContent = 'Falsches Passwort!';
-                errorEl.classList.add('show');
-                setTimeout(() => {
-                    errorEl.classList.remove('show');
-                }, 3000);
-            }
-        }
+    function saveData() {
+        localStorage.setItem('hp_sponsors', JSON.stringify(sponsors));
+        updateStats();
+        renderTable();
+    }
 
-        // Handle logout
-        function handleLogout() {
-            localStorage.removeItem('authenticated');
-            document.getElementById('loginContainer').classList.add('active');
-            document.getElementById('dashboardContainer').classList.remove('active');
+    // ── AUTH ─────────────────────────────────────────
+    function doLogin() {
+        const val = document.getElementById('password').value;
+        if (val === PASSWORD) {
+            localStorage.setItem('hp_auth', '1');
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboardScreen').classList.add('active');
+            loadData(); updateStats(); renderTable();
+        } else {
+            const err = document.getElementById('loginError');
+            err.classList.add('show');
             document.getElementById('password').value = '';
+            setTimeout(() => err.classList.remove('show'), 3500);
+        }
+    }
+
+    function doLogout() {
+        localStorage.removeItem('hp_auth');
+        document.getElementById('dashboardScreen').classList.remove('active');
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('password').value = '';
+    }
+
+    function togglePassword() {
+        const inp = document.getElementById('password');
+        const eyeOn = document.getElementById('eyeIcon');
+        const eyeOff = document.getElementById('eyeOffIcon');
+        if (inp.type === 'password') {
+            inp.type = 'text';
+            eyeOn.style.display = 'none';
+            eyeOff.style.display = 'block';
+        } else {
+            inp.type = 'password';
+            eyeOn.style.display = 'block';
+            eyeOff.style.display = 'none';
+        }
+    }
+
+    // ── STATS ─────────────────────────────────────────
+    function updateStats() {
+        const t = sponsors.length;
+        const contacted = sponsors.filter(s => s.status !== 'Noch nicht kontaktiert').length;
+        const replies   = sponsors.filter(s => s.status === 'Antwort erhalten').length;
+        const rejects   = sponsors.filter(s => s.status === 'Absage').length;
+        const partners  = sponsors.filter(s => s.status === 'Zusage/Partner').length;
+        document.getElementById('sTotal').textContent     = t;
+        document.getElementById('sContacted').textContent = contacted;
+        document.getElementById('sReplies').textContent   = replies;
+        document.getElementById('sRejects').textContent   = rejects;
+        document.getElementById('sPartners').textContent  = partners;
+    }
+
+    // ── BADGE ─────────────────────────────────────────
+    function badgeClass(status) {
+        return {
+            'Noch nicht kontaktiert': 'badge-new',
+            'E-Mail in Vorbereitung': 'badge-preparing',
+            'E-Mail gesendet':        'badge-sent',
+            'Antwort erhalten':       'badge-reply',
+            'Absage':                 'badge-reject',
+            'Zusage/Partner':         'badge-accept'
+        }[status] || 'badge-new';
+    }
+
+    // ── RENDER TABLE ─────────────────────────────────
+    function renderTable(list) {
+        const data = list ?? sponsors;
+        const wrap = document.getElementById('tableContainer');
+
+        if (!data.length) {
+            wrap.innerHTML = `<div class="empty-state">
+                <div class="empty-icon">🔍</div>
+                <h3>Keine Sponsoren vorhanden</h3>
+                <p>Klicken Sie auf „+ Neuer Sponsor", um einen hinzuzufügen.</p>
+            </div>`;
+            return;
         }
 
-        // Show dashboard
-        function showDashboard() {
-            document.getElementById('loginContainer').classList.remove('active');
-            document.getElementById('dashboardContainer').classList.add('active');
-            loadData();
-            updateStats();
-            renderTable();
-        }
+        let rows = data.map(s => `
+            <tr>
+                <td>
+                    <div class="company-name">${esc(s.companyName)}</div>
+                    <div class="contact-name">${esc(s.contactPerson)}</div>
+                </td>
+                <td><a class="email-link" href="mailto:${esc(s.email)}">${esc(s.email)}</a></td>
+                <td><span class="badge ${badgeClass(s.status)}">${esc(s.status)}</span></td>
+                <td class="notes-cell" title="${esc(s.notes || '')}">${s.notes ? esc(s.notes.substring(0,40)) + (s.notes.length>40?'…':'') : '–'}</td>
+                <td class="date-cell">${s.emailSentDate || '–'}</td>
+                <td class="date-cell">${s.responseDate || '–'}</td>
+                <td>
+                    <div class="actions">
+                        <button class="btn-action" onclick="openEditModal(${s.id})">Bearbeiten</button>
+                        <button class="btn-action del" onclick="askDelete(${s.id})">Löschen</button>
+                    </div>
+                </td>
+            </tr>`).join('');
 
-        // Check authentication on load
-        window.addEventListener('load', () => {
-            if (localStorage.getItem('authenticated') === 'true') {
-                showDashboard();
-            }
+        wrap.innerHTML = `<table>
+            <thead>
+                <tr>
+                    <th>Firma / Kontakt</th>
+                    <th>E-Mail</th>
+                    <th>Status</th>
+                    <th>Notizen</th>
+                    <th>E-Mail gesendet</th>
+                    <th>Antwort erhalten</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>`;
+    }
+
+    function esc(str) {
+        if (!str) return '';
+        return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── FILTER ──────────────────────────────────────
+    function filterTable() {
+        const q = document.getElementById('searchInput').value.toLowerCase().trim();
+        const s = document.getElementById('statusFilter').value;
+        const filtered = sponsors.filter(sp => {
+            const match = !q || [sp.companyName, sp.contactPerson, sp.email]
+                .some(v => (v||'').toLowerCase().includes(q));
+            const statusMatch = !s || sp.status === s;
+            return match && statusMatch;
         });
+        renderTable(filtered);
+    }
 
-        // Update statistics
-        function updateStats() {
-            const total = sponsors.length;
-            const contacted = sponsors.filter(s => s.status !== 'Noch nicht kontaktiert').length;
-            const replies = sponsors.filter(s => s.status === 'Antwort erhalten').length;
-            const rejects = sponsors.filter(s => s.status === 'Absage').length;
-            const partners = sponsors.filter(s => s.status === 'Zusage/Partner').length;
+    // ── MODAL ────────────────────────────────────────
+    function openAddModal() {
+        editingId = null;
+        document.getElementById('modalTitle').textContent = 'Neuer Sponsor';
+        clearModalFields();
+        document.getElementById('sponsorModal').classList.add('active');
+    }
 
-            document.getElementById('statTotal').textContent = total;
-            document.getElementById('statContacted').textContent = contacted;
-            document.getElementById('statReplies').textContent = replies;
-            document.getElementById('statRejects').textContent = rejects;
-            document.getElementById('statPartners').textContent = partners;
+    function openEditModal(id) {
+        const s = sponsors.find(x => x.id === id);
+        if (!s) return;
+        editingId = id;
+        document.getElementById('modalTitle').textContent = 'Sponsor bearbeiten';
+        document.getElementById('mCompany').value      = s.companyName || '';
+        document.getElementById('mContact').value      = s.contactPerson || '';
+        document.getElementById('mEmail').value        = s.email || '';
+        document.getElementById('mStatus').value       = s.status || 'Noch nicht kontaktiert';
+        document.getElementById('mEmailDate').value    = s.emailSentDate || '';
+        document.getElementById('mResponseDate').value = s.responseDate || '';
+        document.getElementById('mNotes').value        = s.notes || '';
+        document.getElementById('sponsorModal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('sponsorModal').classList.remove('active');
+        clearModalFields();
+        editingId = null;
+    }
+
+    function clearModalFields() {
+        ['mCompany','mContact','mEmail','mEmailDate','mResponseDate','mNotes'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        document.getElementById('mStatus').value = 'Noch nicht kontaktiert';
+    }
+
+    function saveSponsor() {
+        const company = document.getElementById('mCompany').value.trim();
+        const contact = document.getElementById('mContact').value.trim();
+        const email   = document.getElementById('mEmail').value.trim();
+        if (!company || !contact || !email) {
+            alert('Bitte alle Pflichtfelder ausfüllen.');
+            return;
         }
-
-        // Get status badge class
-        function getStatusClass(status) {
-            const classes = {
-                'Noch nicht kontaktiert': 'status-new',
-                'E-Mail in Vorbereitung': 'status-preparing',
-                'E-Mail gesendet': 'status-sent',
-                'Antwort erhalten': 'status-reply',
-                'Absage': 'status-reject',
-                'Zusage/Partner': 'status-accept'
-            };
-            return classes[status] || 'status-new';
+        const obj = {
+            id: editingId || Date.now(),
+            companyName:   company,
+            contactPerson: contact,
+            email:         email,
+            status:        document.getElementById('mStatus').value,
+            emailSentDate: document.getElementById('mEmailDate').value,
+            responseDate:  document.getElementById('mResponseDate').value,
+            notes:         document.getElementById('mNotes').value.trim()
+        };
+        if (editingId) {
+            const idx = sponsors.findIndex(s => s.id === editingId);
+            if (idx !== -1) sponsors[idx] = obj;
+        } else {
+            sponsors.push(obj);
         }
+        saveData();
+        closeModal();
+    }
 
-        // Render table
-        function renderTable() {
-            const container = document.getElementById('tableContainer');
-            
-            if (sponsors.length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>Keine Sponsoren vorhanden. Klicken Sie auf "+ Neuer Sponsor", um einen hinzuzufügen.</p></div>';
-                return;
-            }
+    // ── DELETE ───────────────────────────────────────
+    function askDelete(id) {
+        pendingDeleteId = id;
+        document.getElementById('confirmOverlay').classList.add('active');
+    }
 
-            let html = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Firmenname</th>
-                            <th>Ansprechpartner</th>
-                            <th>E-Mail</th>
-                            <th>Status</th>
-                            <th>Notizen</th>
-                            <th>E-Mail versendet</th>
-                            <th>Antwort erhalten</th>
-                            <th>Aktionen</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
+    function closeConfirm() {
+        pendingDeleteId = null;
+        document.getElementById('confirmOverlay').classList.remove('active');
+    }
 
-            sponsors.forEach(sponsor => {
-                html += `
-                    <tr>
-                        <td>${sponsor.companyName}</td>
-                        <td>${sponsor.contactPerson}</td>
-                        <td>${sponsor.email}</td>
-                        <td><span class="status-badge ${getStatusClass(sponsor.status)}">${sponsor.status}</span></td>
-                        <td>${sponsor.notes ? sponsor.notes.substring(0, 30) + '...' : '-'}</td>
-                        <td>${sponsor.emailSentDate || '-'}</td>
-                        <td>${sponsor.responseDate || '-'}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn-small btn-edit" onclick="openEditModal(${sponsor.id})">Bearbeiten</button>
-                                <button class="btn-small btn-delete" onclick="deleteSponsor(${sponsor.id})">Löschen</button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            html += '</tbody></table>';
-            container.innerHTML = html;
-        }
-
-        // Filter table
-        function filterTable() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const statusFilter = document.getElementById('statusFilter').value;
-
-            const filtered = sponsors.filter(s => {
-                const matchesSearch = 
-                    s.companyName.toLowerCase().includes(searchTerm) ||
-                    s.contactPerson.toLowerCase().includes(searchTerm) ||
-                    s.email.toLowerCase().includes(searchTerm);
-                
-                const matchesStatus = !statusFilter || s.status === statusFilter;
-
-                return matchesSearch && matchesStatus;
-            });
-
-            const tempSponsors = sponsors;
-            sponsors = filtered;
-            renderTable();
-            sponsors = tempSponsors;
-        }
-
-        // Open add modal
-        function openAddModal() {
-            editingId = null;
-            document.getElementById('modalTitle').textContent = 'Neuer Sponsor';
-            document.getElementById('sponsorForm').reset();
-            document.getElementById('modal').classList.add('active');
-        }
-
-        // Open edit modal
-        function openEditModal(id) {
-            const sponsor = sponsors.find(s => s.id === id);
-            if (!sponsor) return;
-
-            editingId = id;
-            document.getElementById('modalTitle').textContent = 'Sponsor bearbeiten';
-            document.getElementById('companyName').value = sponsor.companyName;
-            document.getElementById('contactPerson').value = sponsor.contactPerson;
-            document.getElementById('email').value = sponsor.email;
-            document.getElementById('status').value = sponsor.status;
-            document.getElementById('emailSentDate').value = sponsor.emailSentDate || '';
-            document.getElementById('responseDate').value = sponsor.responseDate || '';
-            document.getElementById('notes').value = sponsor.notes || '';
-            document.getElementById('modal').classList.add('active');
-        }
-
-        // Close modal
-        function closeModal() {
-            document.getElementById('modal').classList.remove('active');
-            document.getElementById('sponsorForm').reset();
-            editingId = null;
-        }
-
-        // Handle save
-        function handleSave(event) {
-            event.preventDefault();
-
-            const sponsor = {
-                id: editingId || Date.now(),
-                companyName: document.getElementById('companyName').value,
-                contactPerson: document.getElementById('contactPerson').value,
-                email: document.getElementById('email').value,
-                status: document.getElementById('status').value,
-                emailSentDate: document.getElementById('emailSentDate').value,
-                responseDate: document.getElementById('responseDate').value,
-                notes: document.getElementById('notes').value
-            };
-
-            if (editingId) {
-                const index = sponsors.findIndex(s => s.id === editingId);
-                if (index !== -1) {
-                    sponsors[index] = sponsor;
-                }
-            } else {
-                sponsors.push(sponsor);
-            }
-
+    function confirmDelete() {
+        if (pendingDeleteId) {
+            sponsors = sponsors.filter(s => s.id !== pendingDeleteId);
             saveData();
-            closeModal();
         }
+        closeConfirm();
+    }
 
-        // Delete sponsor
-        function deleteSponsor(id) {
-            if (confirm('Möchten Sie diesen Sponsor wirklich löschen?')) {
-                sponsors = sponsors.filter(s => s.id !== id);
-                saveData();
-            }
-        }
+    // ── CLOSE ON BACKDROP ────────────────────────────
+    document.getElementById('sponsorModal').addEventListener('click', e => {
+        if (e.target === document.getElementById('sponsorModal')) closeModal();
+    });
 
-        // Close modal when clicking outside
-        document.getElementById('modal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('modal')) {
-                closeModal();
-            }
-        });
-    </script>
+    document.getElementById('confirmOverlay').addEventListener('click', e => {
+        if (e.target === document.getElementById('confirmOverlay')) closeConfirm();
+    });
+
+    // ── INIT ─────────────────────────────────────────
+    if (localStorage.getItem('hp_auth') === '1') {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('dashboardScreen').classList.add('active');
+        loadData(); updateStats(); renderTable();
+    }
+</script>
 </body>
 </html>
