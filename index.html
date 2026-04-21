@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsoring Management - Heikki Piali</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .login-container.active {
+            display: block;
+        }
+
+        .login-container h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .login-container p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .dashboard-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: none;
+            overflow: hidden;
+        }
+
+        .dashboard-container.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-header h1 {
+            font-size: 28px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .number {
+            color: #667eea;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .controls input,
+        .controls select {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .controls input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table thead {
+            background: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        table th {
+            padding: 15px;
+            text-align: left;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+        }
+
+        table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status-new {
+            background: #e8f4f8;
+            color: #0288d1;
+        }
+
+        .status-preparing {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-sent {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .status-reply {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .status-reject {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status-accept {
+            background: #e0f2f1;
+            color: #00695c;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #5568d3;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #333;
+            font-size: 22px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .form-group-modal {
+            margin-bottom: 15px;
+        }
+
+        .form-group-modal label {
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group-modal input,
+        .form-group-modal select,
+        .form-group-modal textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group-modal textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group-modal input:focus,
+        .form-group-modal select:focus,
+        .form-group-modal textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-cancel:hover {
+            background: #d0d0d0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .controls input {
+                min-width: auto;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            table th,
+            table td {
+                padding: 10px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .modal-content {
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN CONTAINER -->
+    <div class="login-container active" id="loginContainer">
+        <h1>🤝 Sponsoring Management</h1>
+        <p>Geben Sie das Passwort ein, um auf das Dashboard zuzugreifen.</p>
+        
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="password">Passwort</label>
+                <input type="password" id="password" placeholder="Management67" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Anmelden</button>
+            <div class="error" id="loginError"></div>
+        </form>
+    </div>
+
+    <!-- DASHBOARD CONTAINER -->
+    <div class="dashboard-container" id="dashboardContainer">
+        <div class="dashboard-header">
+            <h1>📊 Sponsoring Management Dashboard</h1>
+            <button class="logout-btn" onclick="handleLogout()">Abmelden</button>
+        </div>
+
+        <!-- STATISTICS -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <h3>Gesamt</h3>
+                <div class="number" id="statTotal">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Kontaktiert</h3>
+                <div class="number" id="statContacted">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Antworten</h3>
+                <div class="number" id="statReplies">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Absagen</h3>
+                <div class="number" id="statRejects">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Partner</h3>
+                <div class="number" id="statPartners">0</div>
+            </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content">
+            <!-- CONTROLS -->
+            <div class="controls">
+                <input type="text" id="searchInput" placeholder="Nach Firmenname, Ansprechpartner oder E-Mail suchen..." onkeyup="filterTable()">
+                <select id="statusFilter" onchange="filterTable()">
+                    <option value="">Alle Status</option>
+                    <option value="Noch nicht kontaktiert">Noch nicht kontaktiert</option>
+                    <option value="E-Mail in Vorbereitung">E-Mail in Vorbereitung</option>
+                    <option value="E-Mail gesendet">E-Mail gesendet</option>
+                    <option value="Antwort erhalten">Antwort erhalten</option>
+                    <option value="Absage">Absage</option>
+                    <option value="Zusage/Partner">Zusage/Partner</option>
+                </select>
+                <button class="btn-add" onclick="openAddModal()">+ Neuer Sponsor</button>
+            </div>
+
+            <!-- TABLE -->
+            <div id="tableContainer"></div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Neuer Sponsor</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+
+            <form id="sponsorForm" onsubmit="handleSave(event)">
+                <div class="form-group-modal">
+                    <label for="companyName">Firmenname *</label>
+                    <input type="text" id="companyName" required>
+                </div>
+
+                <div class="form-group-modal">
+                    <label for="contactPerson">Ansprechpartner *</label>
+                    <input type="text" id="contactPerson" required>
+                </div>
+
+                <div class="form-group-modal">
+                    <label for="email">E-Mail *</label>
+                    <input type="email" id="email" required>
+                </div>
+
+                <div class="form-group-modal">
+                    <label for="status">Status</label>
+                    <select id="status">
+                        <option value="Noch nicht kontaktiert">Noch nicht kontaktiert</option>
+                        <option value="E-Mail in Vorbereitung">E-Mail in Vorbereitung</option>
+                        <option value="E-Mail gesendet">E-Mail gesendet</option>
+                        <option value="Antwort erhalten">Antwort erhalten</option>
+                        <option value="Absage">Absage</option>
+                        <option value="Zusage/Partner">Zusage/Partner</option>
+                    </select>
+                </div>
+
+                <div class="form-group-modal">
+                    <label for="emailSentDate">E-Mail versendet am</label>
+                    <input type="date" id="emailSentDate">
+                </div>
+
+                <div class="form-group-modal">
+                    <label for="responseDate">Antwort erhalten am</label>
+                    <input type="date" id="responseDate">
+                </div>
+
+                <div class="form-group-modal">
+                    <label for="notes">Notizen</label>
+                    <textarea id="notes" placeholder="Interne Bemerkungen, Gesprächsnotizen, etc."></textarea>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-save">Speichern</button>
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Abbrechen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const CORRECT_PASSWORD = 'Management67';
+        let sponsors = [];
+        let editingId = null;
+
+        // Load data from localStorage
+        function loadData() {
+            const stored = localStorage.getItem('sponsors');
+            if (stored) {
+                sponsors = JSON.parse(stored);
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('sponsors', JSON.stringify(sponsors));
+            updateStats();
+            renderTable();
+        }
+
+        // Handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            const password = document.getElementById('password').value;
+            
+            if (password === CORRECT_PASSWORD) {
+                localStorage.setItem('authenticated', 'true');
+                showDashboard();
+            } else {
+                const errorEl = document.getElementById('loginError');
+                errorEl.textContent = 'Falsches Passwort!';
+                errorEl.classList.add('show');
+                setTimeout(() => {
+                    errorEl.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // Handle logout
+        function handleLogout() {
+            localStorage.removeItem('authenticated');
+            document.getElementById('loginContainer').classList.add('active');
+            document.getElementById('dashboardContainer').classList.remove('active');
+            document.getElementById('password').value = '';
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('loginContainer').classList.remove('active');
+            document.getElementById('dashboardContainer').classList.add('active');
+            loadData();
+            updateStats();
+            renderTable();
+        }
+
+        // Check authentication on load
+        window.addEventListener('load', () => {
+            if (localStorage.getItem('authenticated') === 'true') {
+                showDashboard();
+            }
+        });
+
+        // Update statistics
+        function updateStats() {
+            const total = sponsors.length;
+            const contacted = sponsors.filter(s => s.status !== 'Noch nicht kontaktiert').length;
+            const replies = sponsors.filter(s => s.status === 'Antwort erhalten').length;
+            const rejects = sponsors.filter(s => s.status === 'Absage').length;
+            const partners = sponsors.filter(s => s.status === 'Zusage/Partner').length;
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statContacted').textContent = contacted;
+            document.getElementById('statReplies').textContent = replies;
+            document.getElementById('statRejects').textContent = rejects;
+            document.getElementById('statPartners').textContent = partners;
+        }
+
+        // Get status badge class
+        function getStatusClass(status) {
+            const classes = {
+                'Noch nicht kontaktiert': 'status-new',
+                'E-Mail in Vorbereitung': 'status-preparing',
+                'E-Mail gesendet': 'status-sent',
+                'Antwort erhalten': 'status-reply',
+                'Absage': 'status-reject',
+                'Zusage/Partner': 'status-accept'
+            };
+            return classes[status] || 'status-new';
+        }
+
+        // Render table
+        function renderTable() {
+            const container = document.getElementById('tableContainer');
+            
+            if (sponsors.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>Keine Sponsoren vorhanden. Klicken Sie auf "+ Neuer Sponsor", um einen hinzuzufügen.</p></div>';
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Firmenname</th>
+                            <th>Ansprechpartner</th>
+                            <th>E-Mail</th>
+                            <th>Status</th>
+                            <th>Notizen</th>
+                            <th>E-Mail versendet</th>
+                            <th>Antwort erhalten</th>
+                            <th>Aktionen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            sponsors.forEach(sponsor => {
+                html += `
+                    <tr>
+                        <td>${sponsor.companyName}</td>
+                        <td>${sponsor.contactPerson}</td>
+                        <td>${sponsor.email}</td>
+                        <td><span class="status-badge ${getStatusClass(sponsor.status)}">${sponsor.status}</span></td>
+                        <td>${sponsor.notes ? sponsor.notes.substring(0, 30) + '...' : '-'}</td>
+                        <td>${sponsor.emailSentDate || '-'}</td>
+                        <td>${sponsor.responseDate || '-'}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-small btn-edit" onclick="openEditModal(${sponsor.id})">Bearbeiten</button>
+                                <button class="btn-small btn-delete" onclick="deleteSponsor(${sponsor.id})">Löschen</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Filter table
+        function filterTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            const filtered = sponsors.filter(s => {
+                const matchesSearch = 
+                    s.companyName.toLowerCase().includes(searchTerm) ||
+                    s.contactPerson.toLowerCase().includes(searchTerm) ||
+                    s.email.toLowerCase().includes(searchTerm);
+                
+                const matchesStatus = !statusFilter || s.status === statusFilter;
+
+                return matchesSearch && matchesStatus;
+            });
+
+            const tempSponsors = sponsors;
+            sponsors = filtered;
+            renderTable();
+            sponsors = tempSponsors;
+        }
+
+        // Open add modal
+        function openAddModal() {
+            editingId = null;
+            document.getElementById('modalTitle').textContent = 'Neuer Sponsor';
+            document.getElementById('sponsorForm').reset();
+            document.getElementById('modal').classList.add('active');
+        }
+
+        // Open edit modal
+        function openEditModal(id) {
+            const sponsor = sponsors.find(s => s.id === id);
+            if (!sponsor) return;
+
+            editingId = id;
+            document.getElementById('modalTitle').textContent = 'Sponsor bearbeiten';
+            document.getElementById('companyName').value = sponsor.companyName;
+            document.getElementById('contactPerson').value = sponsor.contactPerson;
+            document.getElementById('email').value = sponsor.email;
+            document.getElementById('status').value = sponsor.status;
+            document.getElementById('emailSentDate').value = sponsor.emailSentDate || '';
+            document.getElementById('responseDate').value = sponsor.responseDate || '';
+            document.getElementById('notes').value = sponsor.notes || '';
+            document.getElementById('modal').classList.add('active');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.getElementById('sponsorForm').reset();
+            editingId = null;
+        }
+
+        // Handle save
+        function handleSave(event) {
+            event.preventDefault();
+
+            const sponsor = {
+                id: editingId || Date.now(),
+                companyName: document.getElementById('companyName').value,
+                contactPerson: document.getElementById('contactPerson').value,
+                email: document.getElementById('email').value,
+                status: document.getElementById('status').value,
+                emailSentDate: document.getElementById('emailSentDate').value,
+                responseDate: document.getElementById('responseDate').value,
+                notes: document.getElementById('notes').value
+            };
+
+            if (editingId) {
+                const index = sponsors.findIndex(s => s.id === editingId);
+                if (index !== -1) {
+                    sponsors[index] = sponsor;
+                }
+            } else {
+                sponsors.push(sponsor);
+            }
+
+            saveData();
+            closeModal();
+        }
+
+        // Delete sponsor
+        function deleteSponsor(id) {
+            if (confirm('Möchten Sie diesen Sponsor wirklich löschen?')) {
+                sponsors = sponsors.filter(s => s.id !== id);
+                saveData();
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
