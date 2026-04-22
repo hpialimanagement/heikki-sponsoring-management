@@ -181,34 +181,47 @@
         .controls input,
         .controls select {
             padding: 10px 15px;
-            background: rgba(255, 255, 255, 0.15);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
+            background: #2c3e50 !important;
+            border: 2px solid #3498db !important;
+            color: white !important;
             border-radius: 8px;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .controls select option {
-            background: #1a1a2e;
-            color: white;
+            background: #2c3e50 !important;
+            color: white !important;
             padding: 10px;
+            font-weight: 500;
+        }
+
+        .controls select option:checked {
+            background: #3498db !important;
+            color: white !important;
         }
 
         .controls select:focus {
-            outline: none;
-            background: rgba(255, 255, 255, 0.2);
-            border-color: #3498db;
-            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+            outline: none !important;
+            background: #34495e !important;
+            border-color: #2ecc71 !important;
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.6) !important;
         }
 
         .controls select:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
+            background: #34495e !important;
+            border-color: #2ecc71 !important;
+            cursor: pointer;
         }
 
         .controls input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        .controls input:focus {
+            outline: none !important;
+            border-color: #2ecc71 !important;
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.6) !important;
         }
 
         .controls button {
