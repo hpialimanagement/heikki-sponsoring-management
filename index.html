@@ -894,7 +894,15 @@
                 </svg>
                 <input type="text" id="searchInput" placeholder="Suche nach Firma, Ansprechpartner oder E-Mail…" oninput="filterTable()">
             </div>
-            <select id="statusFilter" onchange="filterTable()">
+                            <select id="categoryFilter" onchange="filterTable()">
+                    <option value="">Alle Kategorien</option>
+                    <option value="Kopfsponsor">Kopfsponsor</option>
+                    <option value="Seitenkopf-Sponsor">Seitenkopf-Sponsor</option>
+                    <option value="Verpflegung/Trinkgurt">Verpflegung/Trinkgurt</option>
+                    <option value="Ausrüstung">Ausrüstung</option>
+                    <option value="Sonstiges">Sonstiges</option>
+                </select>
+                <select id="statusFilter" onchange="filterTable()">
                 <option value="">Alle Status</option>
                 <option value="Noch nicht kontaktiert">Noch nicht kontaktiert</option>
                 <option value="E-Mail in Vorbereitung">E-Mail in Vorbereitung</option>
@@ -1088,6 +1096,7 @@
                     <div class="contact-name">${esc(s.contactPerson)}</div>
                 </td>
                 <td><a class="email-link" href="mailto:${esc(s.email)}">${esc(s.email)}</a></td>
+                <td>${esc(s.category || '-')}</td>
                 <td><span class="badge ${badgeClass(s.status)}">${esc(s.status)}</span></td>
                 <td class="notes-cell" title="${esc(s.notes || '')}">${s.notes ? esc(s.notes.substring(0,40)) + (s.notes.length>40?'…':'') : '–'}</td>
                 <td class="date-cell">${s.emailSentDate || '–'}</td>
@@ -1105,6 +1114,7 @@
                 <tr>
                     <th>Firma / Kontakt</th>
                     <th>E-Mail</th>
+                                        <th>Kategorie</th>
                     <th>Status</th>
                     <th>Notizen</th>
                     <th>E-Mail gesendet</th>
@@ -1125,11 +1135,13 @@
     function filterTable() {
         const q = document.getElementById('searchInput').value.toLowerCase().trim();
         const s = document.getElementById('statusFilter').value;
+        const c = document.getElementById('categoryFilter').value;
         const filtered = sponsors.filter(sp => {
             const match = !q || [sp.companyName, sp.contactPerson, sp.email]
                 .some(v => (v||'').toLowerCase().includes(q));
+            const categoryMatch = !c || sp.category === c;
             const statusMatch = !s || sp.status === s;
-            return match && statusMatch;
+            return match && categoryMatch && statusMatch;
         });
         renderTable(filtered);
     }
