@@ -902,6 +902,14 @@
                     <option value="Ausrüstung">Ausrüstung</option>
                     <option value="Sonstiges">Sonstiges</option>
                 </select>
+                <select id="categoryFilter" onchange="filterTable()">
+                    <option value="">Alle Kategorien</option>
+                    <option value="Kopfsponsor">Kopfsponsor</option>
+                    <option value="Seitenkopf-Sponsor">Seitenkopf-Sponsor</option>
+                    <option value="Verpflegung/Trinkgurt">Verpflegung/Trinkgurt</option>
+                    <option value="Ausrüstung">Ausrüstung</option>
+                    <option value="Sonstiges">Sonstiges</option>
+                </select>
                 <select id="statusFilter" onchange="filterTable()">
                 <option value="">Alle Status</option>
                 <option value="Noch nicht kontaktiert">Noch nicht kontaktiert</option>
@@ -942,6 +950,17 @@
             <div class="mfield">
                 <label>E-Mail *</label>
                 <input type="email" id="mEmail" required placeholder="max@firma.de">
+                <div class="form-group full">
+                    <label>Sponsoring-Kategorie *</label>
+                    <select id="mCategory" required>
+                        <option value="">-- Bitte wählen --</option>
+                        <option value="Kopfsponsor">Kopfsponsor</option>
+                        <option value="Seitenkopf-Sponsor">Seitenkopf-Sponsor</option>
+                        <option value="Verpflegung/Trinkgurt">Verpflegung/Trinkgurt</option>
+                        <option value="Ausrüstung">Ausrüstung</option>
+                        <option value="Sonstiges">Sonstiges</option>
+                    </select>
+                </div>
             </div>
             <div class="mfield full">
                 <label>Status</label>
@@ -1097,6 +1116,7 @@
                 </td>
                 <td><a class="email-link" href="mailto:${esc(s.email)}">${esc(s.email)}</a></td>
                 <td>${esc(s.category || '-')}</td>
+                <td>${esc(s.category || '-')}</td>
                 <td><span class="badge ${badgeClass(s.status)}">${esc(s.status)}</span></td>
                 <td class="notes-cell" title="${esc(s.notes || '')}">${s.notes ? esc(s.notes.substring(0,40)) + (s.notes.length>40?'…':'') : '–'}</td>
                 <td class="date-cell">${s.emailSentDate || '–'}</td>
@@ -1115,6 +1135,7 @@
                     <th>Firma / Kontakt</th>
                     <th>E-Mail</th>
                                         <th>Kategorie</th>
+                    <th>Kategorie</th>
                     <th>Status</th>
                     <th>Notizen</th>
                     <th>E-Mail gesendet</th>
