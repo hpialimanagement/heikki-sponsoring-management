@@ -181,11 +181,30 @@
         .controls input,
         .controls select {
             padding: 10px 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
             color: white;
             border-radius: 8px;
             font-size: 14px;
+            font-weight: 500;
+        }
+
+        .controls select option {
+            background: #1a1a2e;
+            color: white;
+            padding: 10px;
+        }
+
+        .controls select:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .controls select:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
         }
 
         .controls input::placeholder {
