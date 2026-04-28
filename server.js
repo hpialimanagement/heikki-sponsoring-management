@@ -236,9 +236,14 @@ process.on('SIGINT', () => {
 
 // Start server
 initDB();
-const server = app.listen(PORT, () => {
-  console.log(`[${new Date().toISOString()}] Server running on http://localhost:${PORT}`);
-  console.log('Database mode:', useInMemory ? 'in-memory' : 'file');
-});
 
-module.exports = server;
+// Vercel Serverless: export app statt listen
+if (process.env.VERCEL || process.env.NOW_REGION) {
+  module.exports = app;
+} else {
+  const server = app.listen(PORT, () => {
+    console.log(`[${new Date().toISOString()}] Server running on http://localhost:${PORT}`);
+    console.log('Database mode:', useInMemory ? 'in-memory' : 'file');
+  });
+  module.exports = server;
+}
