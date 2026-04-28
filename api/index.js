@@ -1,6 +1,5 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
+import express from 'express';
+import cors from 'cors';
 
 const app = express();
 
@@ -75,4 +74,4 @@ app.get('/api/stats', (req, res) => {
   });
 });
 
-module.exports = app;
+export default app;
