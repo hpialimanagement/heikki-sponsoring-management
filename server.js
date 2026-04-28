@@ -8,20 +8,51 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('.'));
 
-// Datenbank-Datei (JSON)
+// Serve static files from dist/public (built frontend)
+const staticPath = path.join(__dirname, 'dist', 'public');
+if (fs.existsSync(staticPath)) {
+  app.use(express.static(staticPath));
+} else {
+  // Fallback: serve from current directory (for local dev)
+  app.use(express.static('.'));
+}
+
+// Datenbank-Datei (JSON) - mit In-Memory Fallback für Vercel
 const dbFile = path.join(__dirname, 'sponsors.json');
+
+// In-Memory Datenbank als Fallback (wenn Dateisystem read-only ist)
+let inMemoryDB = null;
+let useInMemory = false;
 
 // Datenbank initialisieren
 function initDB() {
-  if (!fs.existsSync(dbFile)) {
-    fs.writeFileSync(dbFile, JSON.stringify([], null, 2));
+  try {
+    if (!fs.existsSync(dbFile)) {
+      fs.writeFileSync(dbFile, JSON.stringify([], null, 2));
+    }
+    // Test ob wir schreiben können
+    fs.accessSync(path.dirname(dbFile), fs.constants.W_OK);
+    useInMemory = false;
+    console.log('Using file-based database:', dbFile);
+  } catch (err) {
+    console.log('Filesystem is read-only, using in-memory database');
+    useInMemory = true;
+    // Versuche bestehende Daten zu laden
+    try {
+      const data = fs.readFileSync(dbFile, 'utf8');
+      inMemoryDB = JSON.parse(data);
+    } catch {
+      inMemoryDB = [];
+    }
   }
 }
 
 // Datenbank lesen
 function readDB() {
+  if (useInMemory) {
+    return inMemoryDB || [];
+  }
   try {
     const data = fs.readFileSync(dbFile, 'utf8');
     return JSON.parse(data);
@@ -33,18 +64,24 @@ function readDB() {
 
 // Datenbank schreiben
 function writeDB(data) {
+  if (useInMemory) {
+    inMemoryDB = data;
+    return true;
+  }
   try {
     fs.writeFileSync(dbFile, JSON.stringify(data, null, 2));
     return true;
   } catch (err) {
-    console.error('Fehler beim Schreiben der Datenbank:', err);
-    return false;
+    console.error('Fehler beim Schreiben der Datenbank, wechsle zu In-Memory:', err);
+    useInMemory = true;
+    inMemoryDB = data;
+    return true;
   }
 }
 
 // Health Check
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', timestamp: new Date().toISOString(), mode: useInMemory ? 'in-memory' : 'file' });
 });
 
 // Login
@@ -181,6 +218,16 @@ app.get('/api/stats', (req, res) => {
   }
 });
 
+// SPA Fallback - serve index.html for all non-API routes
+app.get('*', (req, res) => {
+  const indexPath = path.join(staticPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.sendFile(path.join(__dirname, 'index.html'));
+  }
+});
+
 // Graceful shutdown
 process.on('SIGTERM', () => {
   console.log('SIGTERM received, closing gracefully...');
@@ -196,12 +243,7 @@ process.on('SIGINT', () => {
 initDB();
 const server = app.listen(PORT, () => {
   console.log(`[${new Date().toISOString()}] Server running on http://localhost:${PORT}`);
-  console.log('Database file:', dbFile);
+  console.log('Database mode:', useInMemory ? 'in-memory' : 'file');
 });
-
-// Keep-alive ping
-setInterval(() => {
-  console.log(`[${new Date().toISOString()}] Server alive`);
-}, 60000);
 
 module.exports = server;
