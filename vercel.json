@@ -2,16 +2,9 @@
   "version": 2,
   "buildCommand": "pnpm build",
   "installCommand": "pnpm install --no-frozen-lockfile",
-  "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "server.js"
-    }
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index" },
+    { "source": "/health", "destination": "/api/index" },
+    { "source": "/((?!api|health).*)", "destination": "/dist/public/index.html" }
   ]
 }
