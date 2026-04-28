@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "build": "vite build"
+    "build": "vite build && npx esbuild api/vercel-entry.ts --bundle --platform=node --packages=external --format=esm --outfile=api/index.mjs"
   },
   "keywords": [
     "sponsoring",
