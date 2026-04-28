@@ -28,23 +28,18 @@ let useInMemory = false;
 // Datenbank initialisieren
 function initDB() {
   try {
+    // Erst prüfen ob Verzeichnis beschreibbar ist
+    fs.accessSync(path.dirname(dbFile), fs.constants.W_OK);
+    // Nur dann Datei erstellen wenn nicht vorhanden
     if (!fs.existsSync(dbFile)) {
       fs.writeFileSync(dbFile, JSON.stringify([], null, 2));
     }
-    // Test ob wir schreiben können
-    fs.accessSync(path.dirname(dbFile), fs.constants.W_OK);
     useInMemory = false;
     console.log('Using file-based database:', dbFile);
   } catch (err) {
     console.log('Filesystem is read-only, using in-memory database');
     useInMemory = true;
-    // Versuche bestehende Daten zu laden
-    try {
-      const data = fs.readFileSync(dbFile, 'utf8');
-      inMemoryDB = JSON.parse(data);
-    } catch {
-      inMemoryDB = [];
-    }
+    inMemoryDB = [];
   }
 }
 
