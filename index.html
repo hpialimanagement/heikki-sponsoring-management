@@ -1151,7 +1151,7 @@
         const q = document.getElementById('searchInput').value.toLowerCase().trim();
         const s = document.getElementById('statusFilter').value;
         const filtered = sponsors.filter(sp => {
-            const match = !q || [sp.companyName, sp.contactPerson, sp.email]
+            const match = !q || [sp.firma, sp.companyName, sp.ansprechpartner, sp.contactPerson, sp.email]
                 .some(v => (v||'').toLowerCase().includes(q));
             const statusMatch = !s || sp.status === s;
             return match && statusMatch;
