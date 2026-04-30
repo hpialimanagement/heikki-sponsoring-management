@@ -1109,14 +1109,14 @@
         let rows = data.map(s => `
             <tr>
                 <td>
-                    <div class="company-name">${esc(s.companyName)}</div>
-                    <div class="contact-name">${esc(s.contactPerson)}</div>
+                    <div class="company-name">${esc(s.firma || s.companyName)}</div>
+                    <div class="contact-name">${esc(s.ansprechpartner || s.contactPerson)}</div>
                 </td>
                 <td><a class="email-link" href="mailto:${esc(s.email)}">${esc(s.email)}</a></td>
                 <td><span class="badge ${badgeClass(s.status)}">${esc(s.status)}</span></td>
-                <td class="notes-cell" title="${esc(s.notes || '')}">${s.notes ? esc(s.notes.substring(0,40)) + (s.notes.length>40?'…':'') : '–'}</td>
-                <td class="date-cell">${s.emailSentDate || '–'}</td>
-                <td class="date-cell">${s.responseDate || '–'}</td>
+                <td class="notes-cell" title="${esc(s.notizen || s.notes || '')}">${(s.notizen || s.notes) ? esc((s.notizen || s.notes).substring(0,40)) + ((s.notizen || s.notes).length>40?'…':'') : '–'}</td>
+                <td class="date-cell">${s.emailVersendet || s.emailSentDate || '–'}</td>
+                <td class="date-cell">${s.antwortErhalten || s.responseDate || '–'}</td>
                 <td>
                     <div class="actions">
                         <button class="btn-action" onclick="openEditModal(${s.id})">Bearbeiten</button>
@@ -1172,13 +1172,13 @@
         if (!s) return;
         editingId = id;
         document.getElementById('modalTitle').textContent = 'Sponsor bearbeiten';
-        document.getElementById('mCompany').value      = s.companyName || '';
-        document.getElementById('mContact').value      = s.contactPerson || '';
+        document.getElementById('mCompany').value      = s.firma || s.companyName || '';
+        document.getElementById('mContact').value      = s.ansprechpartner || s.contactPerson || '';
         document.getElementById('mEmail').value        = s.email || '';
         document.getElementById('mStatus').value       = s.status || 'Noch nicht kontaktiert';
-        document.getElementById('mEmailDate').value    = s.emailSentDate || '';
-        document.getElementById('mResponseDate').value = s.responseDate || '';
-        document.getElementById('mNotes').value        = s.notes || '';
+        document.getElementById('mEmailDate').value    = s.emailVersendet || s.emailSentDate || '';
+        document.getElementById('mResponseDate').value = s.antwortErhalten || s.responseDate || '';
+        document.getElementById('mNotes').value        = s.notizen || s.notes || '';
         document.getElementById('sponsorModal').classList.add('active');
     }
 
@@ -1204,13 +1204,13 @@
             return;
         }
         const obj = {
-            companyName:   company,
-            contactPerson: contact,
-            email:         email,
-            status:        document.getElementById('mStatus').value,
-            emailSentDate: document.getElementById('mEmailDate').value || null,
-            responseDate:  document.getElementById('mResponseDate').value || null,
-            notes:         document.getElementById('mNotes').value.trim()
+            firma:           company,
+            ansprechpartner: contact,
+            email:           email,
+            status:          document.getElementById('mStatus').value,
+            emailVersendet:  document.getElementById('mEmailDate').value || null,
+            antwortErhalten: document.getElementById('mResponseDate').value || null,
+            notizen:         document.getElementById('mNotes').value.trim()
         };
         try {
             let response;
