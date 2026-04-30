@@ -6,6 +6,8 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Management from "./pages/Management";
+import Dossier from "./pages/Dossier";
 import DashboardLayout from "./components/DashboardLayout";
 import { useAuth } from "./_core/hooks/useAuth";
 import { Loader2 } from "lucide-react";
@@ -21,26 +23,46 @@ function Router() {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Login />;
-  }
-
   return (
-    <DashboardLayout>
-      <Switch>
-        <Route path={"/"} component={Dashboard} />
-        <Route path={"/404"} component={NotFound} />
-        {/* Final fallback route */}
-        <Route component={NotFound} />
-      </Switch>
-    </DashboardLayout>
+    <Switch>
+      {/* Public Dossier Routes */}
+      <Route path="/heikki">
+        <Dossier mode="heikki" />
+      </Route>
+      <Route path="/rcb">
+        <Dossier mode="rcb" />
+      </Route>
+
+      {/* Protected Management Routes */}
+      <Route path="/">
+        {!isAuthenticated ? (
+          <Login />
+        ) : (
+          <DashboardLayout>
+            <Dashboard />
+          </DashboardLayout>
+        )}
+      </Route>
+
+      {/* New Management UI Route (Optional, for testing the new design) */}
+      <Route path="/mgmt">
+        {!isAuthenticated ? (
+          <Login />
+        ) : (
+          <Management />
+        )}
+      </Route>
+
+      <Route path="/404" component={NotFound} />
+      <Route component={NotFound} />
+    </Switch>
   );
 }
 
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
+      <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
           <Toaster />
           <Router />
